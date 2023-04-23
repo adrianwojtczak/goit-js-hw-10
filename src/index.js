@@ -11,7 +11,12 @@ const countryInfo = document.querySelector('.country-info');
 searchBox.addEventListener(
   'input',
   debounce(async ev => {
-    const countries = await fetchCountries(ev.target.value);
+    const countries = await fetchCountries(ev.target.value.trim());
+    if (!countries) {
+      countryList.innerHTML = '';
+      countryInfo.innerHTML = '';
+      return;
+    }
 
     if (countries.length > 10) {
       Notiflix.Notify.info(
@@ -21,7 +26,7 @@ searchBox.addEventListener(
       countryList.innerHTML = countries
         .map(
           country =>
-            `<li><img height=16 src=${country.flags.png}> ${country.name.common}</li>`
+            `<li><img height=16 src=${country.flags.svg}> ${country.name.common}</li>`
         )
         .join('');
     } else {
@@ -32,7 +37,7 @@ searchBox.addEventListener(
       countryInfo.innerHTML = countries
         .map(
           country =>
-            `<p><img height=24 src=${country.flags.png}> ${
+            `<p><img height=24 src=${country.flags.svg}> ${
               country.name.common
             }</p>
             <p>Capital: ${country.capital}</p>

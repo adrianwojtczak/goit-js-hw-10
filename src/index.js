@@ -12,7 +12,15 @@ searchBox.addEventListener(
   'input',
   debounce(async ev => {
     const countries = await fetchCountries(ev.target.value.trim());
+
     if (!countries) {
+      countryList.innerHTML = '';
+      countryInfo.innerHTML = '';
+      return;
+    }
+
+    if (!/^[a-zA-Z\s]+$/.test(ev.target.value.trim())) {
+      Notiflix.Notify.failure('Oops, there is no country with that name');
       countryList.innerHTML = '';
       countryInfo.innerHTML = '';
       return;
@@ -26,7 +34,10 @@ searchBox.addEventListener(
       countryList.innerHTML = countries
         .map(
           country =>
-            `<li><img height=16 src=${country.flags.svg}> ${country.name.common}</li>`
+            `<li class="country-list__item"><svg height="16" width="30">
+            <image href="${country.flags.svg}" height="100%" width="100%" preserveAspectRatio="none"/>
+          </svg>
+        ${country.name.common}</li>`
         )
         .join('');
     } else {
@@ -37,12 +48,16 @@ searchBox.addEventListener(
       countryInfo.innerHTML = countries
         .map(
           country =>
-            `<p><img height=24 src=${country.flags.svg}> ${
-              country.name.common
-            }</p>
-            <p>Capital: ${country.capital}</p>
-            <p>Population: ${country.population}</p>
-            <p>Languages: ${Object.values(country.languages).join(', ')}</p>`
+            `<p class="country-info__item"><svg height="24" width="38">
+            <image href="${
+              country.flags.svg
+            }" height="100%" width="100%" preserveAspectRatio="none"/>
+          </svg>${country.name.common}</p>
+            <p class="country-info__item">Capital: ${country.capital}</p>
+            <p class="country-info__item">Population: ${country.population}</p>
+            <p class="country-info__item">Languages: ${Object.values(
+              country.languages
+            ).join(', ')}</p>`
         )
         .join('');
     } else {
